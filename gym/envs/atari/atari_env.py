@@ -199,7 +199,7 @@ class AtariEnv(gym.Env, utils.EzPickle):
         distC= distance(xcoragent,xcorAlienC,ycoragent,ycorAlienC)
 
         [xcorAlienD,ycorAlienD]= coordinates(y,48 )
-        distC= distance(xcoragent,xcorAlienD,ycoragent,ycorAlienD)
+        distD= distance(xcoragent,xcorAlienD,ycoragent,ycorAlienD)
         
         
       
@@ -220,9 +220,9 @@ class AtariEnv(gym.Env, utils.EzPickle):
         
         #determining the distance of the closest alien
 
-        minAlien= min(distA,distB,distC)
+        minAlien= min(distA,distB,distC,distD)
 
-        if math.isnan(distA) and math.isnan(distB) and math.isnan(distC):
+        if math.isnan(distA) and math.isnan(distB) and math.isnan(distC) and math.isnan(distD):
           minAlien=1000
 
         #print('Nearest Alien:',minAlien)
