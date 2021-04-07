@@ -23,10 +23,10 @@ def to_ram(ale):
     ale.getRAM(ram)
     return ram
 
-#global variable to store the previous frames RGB
-prevRGB=0
 
-#function to find coordinates of Aliens and Agent
+
+
+#function to find coordinates of ghosts and mspacman
 def coordinates(diffmat,bval):
   wherer = np.equal(diffmat[:,:,2], bval)
 
@@ -40,15 +40,15 @@ def coordinates(diffmat,bval):
 
     for j in range(0,len(indices[0])):
 
-      if tempy == indices[0][j] and abs(tempx - indices[1][j]) == 1:
-        listx=np.append(listx, tempx)
-        listy=np.append(listy, tempy)
+      
+      listx=np.append(listx, tempx)
+      listy=np.append(listy, tempy)
 
   return np.average(listx), np.average(listy)
  
-#function to locate position of eggs 
+#function to locate position of dots 
 def cooregg(d1) :
-  wherer = np.not_equal(d1[:,:,2], 0)
+  wherer = np.equal(d1[:,:,2], 111)
   indices = np.where(wherer) 
 
   listx=[]
@@ -57,10 +57,11 @@ def cooregg(d1) :
   for i in range(0,len(indices[0])):
     tempy= indices[0][i]
     tempx= indices[1][i]
-    if tempy < 169:
-      if d1[tempy+1,tempx,2] != 0  and  d1[tempy-1,tempx,2] == 0 and  d1[tempy,tempx-1,2] == 0 and  d1[tempy,tempx+1,2] == 0 and  d1[tempy-1,tempx-1,2]==0 and  d1[tempy-1,tempx+1,2] == 0 and  d1[tempy+1,tempx-1,2] == 0 and  d1[tempy+1,tempx+1,2] == 0 and  d1[tempy+2,tempx,2] != 188 and  d1[tempy+3,tempx,2] != 188 and  d1[tempy+2,tempx,2] != 28 and  d1[tempy+3,tempx,2] != 28:
+    if tempx < 150 and tempy<168:
+      if d1[tempy+1,tempx,2] == 111 and d1[tempy+2,tempx,2] == 136  and  d1[tempy,tempx+4,2] == 136 and  d1[tempy,tempx+3,2] == 111 and  d1[tempy,tempx+2,2] == 111 and  d1[tempy,tempx+1,2] == 111 and d1[tempy,tempx-1,2] == 136 and d1[tempy-1,tempx,2] == 136 : 
         listx=np.append(listx, tempx)
         listy=np.append(listy, tempy) 
+  listx = [x+2 for x in listx]
   return listx, listy
 
 #function to determine distance between objects using pythagoras
@@ -160,9 +161,9 @@ class AtariEnv(gym.Env, utils.EzPickle):
         reward = 0.0
 
         #creating new variable to store value of original reward function
-        gamescore=0.0
+        gameScore=0.0
        
-        global prevRGB
+       
         action = self._action_set[a]
 
         if isinstance(self.frameskip, int):
@@ -171,39 +172,40 @@ class AtariEnv(gym.Env, utils.EzPickle):
             num_steps = self.np_random.randint(self.frameskip[0], self.frameskip[1])
         
         for _ in range(num_steps):
-            gamescore += self.ale.act(action)
+            gameScore += self.ale.act(action)
 
         ob = self._get_obs()
 
         
         #Finding the difference in RGB for the very first frame and the current frame
 
-        x= self.x[0:175,:]
+        
 
-        y=ob[0:175,:]
-        d= x-y
+        y=ob[0:170,:]
+        
 
-        #Determining distance between agent and aliens
+        #Determining distance between mspacman and dots
 
-        [xcoragent,ycoragent]= coordinates(d,188)
-        [xcorAlienA,ycorAlienA]= coordinates(d,216)
+        [xcoragent,ycoragent]= coordinates(y,74)
+        [xcorAlienA,ycorAlienA]= coordinates(y,72)
        
         distA= distance(xcoragent,xcorAlienA,ycoragent,ycorAlienA)
         
-        [xcorAlienB,ycorAlienB]= coordinates(d,100)
+        [xcorAlienB,ycorAlienB]= coordinates(y,179)
         
         distB= distance(xcoragent,xcorAlienB,ycoragent,ycorAlienB)
         
-        [xcorAlienC,ycorAlienC]= coordinates(d,228)
+        [xcorAlienC,ycorAlienC]= coordinates(y,152)
         distC= distance(xcoragent,xcorAlienC,ycoragent,ycorAlienC)
+
+        [xcorAlienD,ycorAlienD]= coordinates(y,48 )
+        distC= distance(xcoragent,xcorAlienD,ycoragent,ycorAlienD)
         
         
-        #Finding difference between previous RGB frame and current frame
-        d1= prevRGB - y
-        prevRGB= y
+      
 
         #Finding location of each egg and determining which is closest to agent
-        [xcorEgg,ycorEgg]= cooregg(d1)
+        [xcorEgg,ycorEgg]= cooregg(y)
 
         #print(len(xcorEgg))
 
@@ -235,7 +237,7 @@ class AtariEnv(gym.Env, utils.EzPickle):
 
         #print('reward:', reward)
 
-        return minAlien, mindist, ob, gamescore, reward, self.ale.game_over(), {"ale.lives": self.ale.lives()}
+        return minAlien, mindist, ob, gameScore, reward, self.ale.game_over(), {"ale.lives": self.ale.lives()}
 
     def _get_image(self):
         return self.ale.getScreenRGB2()
@@ -259,8 +261,7 @@ class AtariEnv(gym.Env, utils.EzPickle):
 
         self.ale.reset_game()
         self.x = self._get_obs()
-        global prevRGB
-        prevRGB= self._get_obs()[0:175,:]
+       
         
         return self._get_obs()
 
