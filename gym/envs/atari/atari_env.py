@@ -195,7 +195,7 @@ class AtariEnv(gym.Env, utils.EzPickle):
         
         distB= distance(xcoragent,xcorAlienB,ycoragent,ycorAlienB)
         
-        [xcorAlienC,ycorAlienC]= coordinates(y,152)
+        [xcorAlienC,ycorAlienC]= coordinates(y,153)
         distC= distance(xcoragent,xcorAlienC,ycoragent,ycorAlienC)
 
         [xcorAlienD,ycorAlienD]= coordinates(y,48 )
