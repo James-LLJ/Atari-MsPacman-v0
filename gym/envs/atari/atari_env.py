@@ -231,7 +231,7 @@ class AtariEnv(gym.Env, utils.EzPickle):
         #Setting up conditions for new reward function
         
         #if mindist < 20 and minAlien > 40  :
-        if mindist < 40 and minAlien > 20  :
+        if mindist < 100 and minAlien > 20  :
           #reward=reward + 10
           reward=reward + 50
         
