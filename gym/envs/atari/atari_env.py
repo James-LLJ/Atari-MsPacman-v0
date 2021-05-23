@@ -58,7 +58,8 @@ def cooregg(d1) :
     tempy= indices[0][i]
     tempx= indices[1][i]
     if tempx < 150 and tempy<168:
-      if d1[tempy+1,tempx,2] == 111 and d1[tempy+2,tempx,2] == 136  and  d1[tempy,tempx+4,2] == 136 and  d1[tempy,tempx+3,2] == 111 and  d1[tempy,tempx+2,2] == 111 and  d1[tempy,tempx+1,2] == 111 and d1[tempy,tempx-1,2] == 136 and d1[tempy-1,tempx,2] == 136 : 
+      #if d1[tempy+1,tempx,2] == 111 and d1[tempy+2,tempx,2] == 136  and  d1[tempy,tempx+4,2] == 136 and  d1[tempy,tempx+3,2] == 111 and  d1[tempy,tempx+2,2] == 111 and  d1[tempy,tempx+1,2] == 111 and d1[tempy,tempx-1,2] == 136 and d1[tempy-1,tempx,2] == 136 : 
+      if d1[tempy+1,tempx,2] == 111 and d1[tempy-1,tempx,2] == 136 : 
         listx=np.append(listx, tempx)
         listy=np.append(listy, tempy) 
   listx = [x+2 for x in listx]
@@ -229,10 +230,13 @@ class AtariEnv(gym.Env, utils.EzPickle):
 
         #Setting up conditions for new reward function
         
-        if mindist < 20 and minAlien > 40  :
-          reward=reward + 10
-
-        if minAlien <= 40:
+        #if mindist < 20 and minAlien > 40  :
+        if mindist < 40 and minAlien > 20  :
+          #reward=reward + 10
+          reward=reward + 50
+        
+        #if minAlien <= 40:
+        if minAlien <= 20:
           reward= reward - 10
 
         #print('reward:', reward)
