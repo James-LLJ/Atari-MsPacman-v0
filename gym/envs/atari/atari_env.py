@@ -233,11 +233,11 @@ class AtariEnv(gym.Env, utils.EzPickle):
         #if mindist < 20 and minAlien > 40  :
         if mindist < 100 and minAlien > 20  :
           #reward=reward + 10
-          reward=reward + 50
+          reward=reward + 100
         
         #if minAlien <= 40:
         if minAlien <= 20:
-          reward= reward - 10
+          reward= reward - 1
 
         #print('reward:', reward)
 
